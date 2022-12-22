@@ -2,9 +2,6 @@
 # ======> PROJECT: AMAZON REVIEW CRAWLER FOR NLP MODEL
 # ======> CREDIT: VI PHAM/anhvi02
 # ======> GITHUB SOURCE: https://github.com/anhvi02/AmazonReview_Crawl_NLP.git
-print(' ')
-print('=======> TOOL: AMAZON REVIEW CRAWLER <======')
-print('=======> CREDIT: anhvi02 (github)')
 
 import pandas as pd
 import numpy as np
