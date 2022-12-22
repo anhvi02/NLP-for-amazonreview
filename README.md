@@ -1,5 +1,7 @@
 # AmazonReview_Crawl_NLP
-Built a tool to crawl Amazon reviews and classify review with CNN. This project use 2 methods of vectorize data: Tensorflow.Tokenizer and gensim.Word2Vec.
+Built a tool to crawl Amazon reviews and classify review with CNN. This project use 2 methods of vectorizing data: 
+- Tokenizer, Embedding from Tensorflow
+- gensim.Word2Vec.
 
 # Folder details:
 - crawler:
