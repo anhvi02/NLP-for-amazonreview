@@ -2,6 +2,9 @@
 # ======> PROJECT: AMAZON REVIEW CRAWLER FOR NLP MODEL
 # ======> CREDIT: VI PHAM/anhvi02
 # ======> GITHUB SOURCE: https://github.com/anhvi02/AmazonReview_Crawl_NLP.git
+print(' ')
+print('=======> TOOL: AMAZON REVIEW CRAWLER <======')
+print('=======> CREDIT: anhvi02 (github)')
 
 import pandas as pd
 import numpy as np
@@ -109,7 +112,7 @@ except Exception as err:
     print(f'=== ERROR: {err.__class__}')
 finally:
     df = pd.DataFrame(products)
-    df = df.drop_duplicates(subset=1)
+    df = df.drop_duplicates()
     df.to_csv('products_code.csv')
     print(f'-- EXTRACTION FINISHED - NUMBER OF PRODUCT URL EXTRACTED: {len(df)}')
 
