@@ -1,9 +1,10 @@
 
 # ======> PROJECT: AMAZON REVIEW CRAWLER FOR NLP MODEL
 # ======> CREDIT: VI PHAM/anhvi02
-# ======> GITHUB SOURCE: https://github.com/anhvi02/AmazonCrawlerForNLP.git
-
-
+# ======> GITHUB SOURCE: https://github.com/anhvi02/AmazonReview_Crawl_NLP.git
+print(' ')
+print('=======> TOOL: AMAZON REVIEW CRAWLER <======')
+print('=======> CREDIT: anhvi02 (github)')
 
 import pandas as pd
 import numpy as np
@@ -20,6 +21,9 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
+# ignore warning
+import warnings
+warnings.filterwarnings('ignore')
 
 # # Setting browser
 # Setting browser's options
@@ -28,32 +32,32 @@ options.add_argument("--ignore-certificate-errors")
 options.add_argument("--start-maximized")
 options.add_argument("--disable-popup-blocking")
 options.add_argument("--incognito")
-# options.add_argument("--headless")
-# options.add_argument("--no-sandbox")
+options.add_argument("--headless")
+options.add_argument("--no-sandbox")
 
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 driver.implicitly_wait(0)
-print("--- DRIVER SET UP AND BROWSER OPENED")
+print("=== DRIVER SET UP AND BROWSER OPENED")
 
 # INPUT
 # list view link
 while True:
     try:
         link = input('-- List view link? ')
-        print('--- CHECKING LINK WITH 3 TRIES...')
+        print('=== CHECKING LINK WITH 3 TRIES...')
         for i in range(3):
             try:
                 driver.get(link)
                 element = WebDriverWait(driver, 4).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div[id="a-page"]')))
                 html_of_interest = driver.execute_script('return arguments[0].innerHTML',element)
                 soup = BeautifulSoup(html_of_interest, 'lxml')
-                print('--- ACCESS LINK SUCCESSFULLY')
+                print('=== ACCESS LINK SUCCESSFULLY')
                 break
             except:
                 continue
         break
     except:
-        print('--- ACCESS LINK FAILED, PLEASE TRY ANOTHER ONE')
+        print('=== ACCESS LINK FAILED, PLEASE TRY ANOTHER ONE')
         continue
 # data file name
 while True:
@@ -71,7 +75,7 @@ while True:
     except:
         continue
 
-print('--- LOADING PAGES TO GET PRODUCTS CODE')
+print('=== LOADING PAGES TO GET PRODUCTS CODE')
 products = []
 cnt = 1
 try:
@@ -85,7 +89,7 @@ try:
         page_height = driver.execute_script("return document.body.scrollHeight")
         target_height = page_height - 1400
         driver.execute_script("window.scrollTo(0, %s);" %target_height )
-
+        sleep(1)
         # get product code
         tag_a = soup.select('a[class="a-link-normal s-no-outline"]')
         for tag in tag_a:
@@ -98,16 +102,17 @@ try:
         # stop condition
         if page_num == cnt:
             break
-        # to the next page
-        driver.find_element_by_xpath('//*[@id="search"]/div[1]/div[1]/div/span[1]/div[1]/div[50]/div/div/span/a[3]').click()
+        # click Next to go to the next list view page
+        next_button = driver.find_elements(By.PARTIAL_LINK_TEXT, 'Next')[0]
+        next_button.click()
         # update count
         cnt += 1
         sleep(2.5)
 except Exception as err:
-    print(f'--- ERROR: {err.__class__}')
+    print(f'=== ERROR: {err.__class__}')
 finally:
     df = pd.DataFrame(products)
-    df = df.drop_duplicates()
+    df = df.drop_duplicates(subset=1)
     df.to_csv('products_code.csv')
     print(f'-- EXTRACTION FINISHED - NUMBER OF PRODUCT URL EXTRACTED: {len(df)}')
 
@@ -115,42 +120,36 @@ finally:
 # EXTRACT FUNCTION
 def extract_function(i):
     item_dict = {}
-
     # Company Name
     try:
         item_dict['Name'] = soup.select('div[class="a-profile-content"]>span')[i].text 
         # TopFoldsc__JobOverviewHeader-sc-kklg8i-22 ihxBLZ
     except:
         item_dict['Name'] = None 
-
     # Star
     try:
         item_dict['Star'] = soup.select('span[class="a-icon-alt"]')[i].text.split(' ')[0]
         # TopFoldsc__JobOverviewHeader-sc-kklg8i-22 ihxBLZ
     except:
         item_dict['Star'] = None 
-
     # Location
     try:
         item_dict['Location'] = soup.select('span[data-hook="review-date"]')[i].text.split('in ')[-1].split('on ')[0]
         # TopFoldsc__JobOverviewHeader-sc-kklg8i-22 ihxBLZ
     except:
         item_dict['Location'] = None 
-
     # Date
     try:
         item_dict['Date'] = soup.select('span[data-hook="review-date"]')[i].text.split('in ')[-1].split('on ')[-1]
         # TopFoldsc__JobOverviewHeader-sc-kklg8i-22 ihxBLZ
     except:
         item_dict['Date'] = None    
-
     # Title
     try:
         item_dict['Title'] = soup.select('a[data-hook="review-title"]')[i].text.strip()
         # TopFoldsc__JobOverviewHeader-sc-kklg8i-22 ihxBLZ
     except:
         item_dict['Title'] = None 
-
     # Review
     try:
         item_dict['Review'] = soup.select('span[data-hook="review-body"]')[i].text.strip()
@@ -201,9 +200,9 @@ try:
             continue
 
 except Exception as err:
-    print(f'--- PROGRAMM SHUT DOWN AT URL NUMBER{i}. Error: {err.__class__}')
+    print(f'=== PROGRAMM SHUT DOWN AT URL NUMBER{i}. Error: {err.__class__}')
 finally:
     df_extracted = pd.DataFrame(list_df)
     df_extracted.to_csv(f'{filename}')
     driver.close()
-    print(f'--- DATA EXTRACTED TO {filename}')
+    print(f'=== DATA EXTRACTED TO {filename}')
