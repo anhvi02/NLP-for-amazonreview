@@ -20,7 +20,7 @@ Built a tool to crawl Amazon reviews and classify review with CNN. This project 
   + CNN model
  
 # Technologies:
-- crawl: python BeautifulSoup, Selenium
+- Crawl: python BeautifulSoup, Selenium
 - NLP: preprocessing, vectorize with Tensorflow.Tokenizer and gensim.Word2Vec
 - Neural Network: tensorflow
  
