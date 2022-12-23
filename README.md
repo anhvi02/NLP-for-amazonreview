@@ -6,6 +6,7 @@ Built a tool to crawl Amazon reviews and classify review with CNN. This project 
 # Folder details:
 - crawler:
   + exe tool
+  + requirements.txt
   + crawler python script
 - data:
   + multiple data files in csv format
