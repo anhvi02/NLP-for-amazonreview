@@ -1,4 +1,5 @@
-# AmazonReview_Crawl_NLP
+# Amazon Product Analysis: Customers' Review Scraping and Sentiment Analysis  
+
 Built a tool to crawl Amazon reviews and classify review with CNN. This project use 2 methods of vectorizing text: 
 - Tokenizer, Embedding from Tensorflow
 - gensim.Word2Vec.
